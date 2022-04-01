@@ -1,78 +1,63 @@
-classdef interrupt_testing < handle
+classdef interrupt_testing4 < handle
     %
     %   Class:
-    %   interrupt_testing
-    
-    %{
-    Old matlab, timers can't be interrupted:
-    https://www.mathworks.com/matlabcentral/answers/96855-is-it-possible-to-interrupt-timer-callbacks-in-matlab-7-14-r2012a
-    
-    System() used to not be blocking:
-    https://www.mathworks.com/matlabcentral/answers/415834-why-system-function-block-the-timer-function-in-matlab-r2018a-but-not-in-r2014a
-    
-    
-    
-    %}
-    
+    %   interrupt_testing4
+    %
+    %   Using Java for pausing, not interrupted
+    %
+    %   This is true even if we have multiple regular statements ...
+    %
     
     %{
     2020b
-    interrupt_testing()
-    UI Figure, timer then direct callback:
+    interrupt_testing4()
         Starting timer
-        Button callback started
-        Button callback stopped, elapsed: 5.0
-        Stopping timer, elapsed: 7.4
-    UI Figure, direct callback then timer:
-        Button callback started
-        Starting timer
+        val=3
+        val=5
         Stopping timer, elapsed: 5.0
-        Button callback stopped, elapsed: 7.3
+        Button callback started
+        val=3
+        val=5
+        Button callback stopped, elapsed: 5.0
     
-    interrupt_testing(true)
-        Starting timer
         Button callback started
+        val=3
+        val=5
         Button callback stopped, elapsed: 5.0
-        Stopping timer, elapsed: 6.4
-        Button callback started
         Starting timer
+        val=3
+        val=5
         Stopping timer, elapsed: 5.0
-        Button callback stopped, elapsed: 6.0
     
     %Launch GUI, start non-GUI timer, press callback
-    interrupt_testing()
-    interrupt_testing.launchTimer()
+    interrupt_testing4()
+    interrupt_testing4.launchTimer()
     %press callback button
-        Starting timer2
-        Button callback started
-        Button callback stopped, elapsed: 5.0
-        Stopping timer2, elapsed: 7.6
+            Starting timer2
+            val=3
+            val=5
+            Stopping timer2, elapsed: 5.0
+            Button callback started
+            val=3
+            val=5
+            Button callback stopped, elapsed: 5.0
     
-    interrupt_testing()
-    %press callback button
-    interrupt_testing.launchTimer()
-        Button callback started
-        >> interrupt_testing.launchTimer()
-        Button callback stopped, elapsed: 5.0
-        Starting timer2
-        Stopping timer2, elapsed: 5.0
     
-    interrupt_testing(true)
-    interrupt_testing.launchTimer()
-    %press callback button
-        Starting timer2
-        Button callback started
-        Button callback stopped, elapsed: 5.0
-        Stopping timer2, elapsed: 8.7
+
     
-    interrupt_testing(true)
+    interrupt_testing4()
     %press callback button
-    interrupt_testing.launchTimer()   
-        Button callback started
-        interrupt_testing.launchTimer()
-        Button callback stopped, elapsed: 5.0
-        Starting timer2
-        Stopping timer2, elapsed: 5.0
+    interrupt_testing4.launchTimer()
+            Button callback started
+            val=3
+            interrupt_testing4.launchTimer()
+            val=5
+            Button callback stopped, elapsed: 5.0
+            Starting timer2
+            val=3
+            val=5
+            Stopping timer2, elapsed: 5.0
+    
     
     %}
     
@@ -87,7 +72,7 @@ classdef interrupt_testing < handle
         function launchTimer()
             %   interrupt_testing.launchTimer()
             t = timer();
-            t.TimerFcn = @(~,~)interrupt_testing.timerCallback2();
+            t.TimerFcn = @(~,~)interrupt_testing4.timerCallback2();
             start(t);
             
         end
@@ -97,14 +82,14 @@ classdef interrupt_testing < handle
             
             h_tic = tic;
             fprintf(2,'Starting timer2\n');
-            pause(5);
+            doThings
             elapsed = toc(h_tic);
             fprintf(2,'Stopping timer2, elapsed: %0.1f\n',elapsed);
         end
     end
     
     methods
-        function obj = interrupt_testing(use_guide)
+        function obj = interrupt_testing4(use_guide)
             if nargin == 0
                 use_guide = false;
             end
@@ -116,7 +101,7 @@ classdef interrupt_testing < handle
                 obj.timer_button.Callback = @(~,~)obj.startTimer();
                 obj.callback_button.Callback = @(~,~)obj.buttonCallback();
             else
-            
+                
                 obj.h_fig = uifigure();
                 obj.timer_button = uibutton(obj.h_fig,'Text','Timer','Position',[100 100 100 50]);
                 obj.callback_button = uibutton(obj.h_fig,'Text','Callback','Position',[300 100 100 50]);
@@ -132,8 +117,8 @@ classdef interrupt_testing < handle
         end
         function buttonCallback(obj)
             h_tic = tic;
-         	fprintf(2,'Button callback started\n');
-            pause(5);
+            fprintf(2,'Button callback started\n');
+            doThings
             elapsed = toc(h_tic);
             fprintf(2,'Button callback stopped, elapsed: %0.1f\n',elapsed);
         end
@@ -142,7 +127,7 @@ classdef interrupt_testing < handle
             %
             h_tic = tic;
             fprintf(2,'Starting timer\n');
-            pause(5);
+            doThings
             elapsed = toc(h_tic);
             fprintf(2,'Stopping timer, elapsed: %0.1f\n',elapsed);
         end
@@ -150,5 +135,20 @@ classdef interrupt_testing < handle
             
         end
     end
+end
+
+function doThings()
+a = 1;
+java.lang.Thread.sleep(1000);
+b = 2;
+java.lang.Thread.sleep(1000);
+c = 3;
+fprintf('val=%d\n',c);
+java.lang.Thread.sleep(1000);
+d = 4;
+java.lang.Thread.sleep(1000);
+e = 5;
+java.lang.Thread.sleep(1000);
+fprintf('val=%d\n',e);
 end
 
